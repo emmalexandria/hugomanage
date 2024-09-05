@@ -13,20 +13,22 @@ def main():
     if len(content_types) > 1:
         content_type = get_content_type(content_types)
 
-    frontmatter = get_example_frontmatter(content_type)
-    if frontmatter == None:
+    example_post = get_example_frontmatter(content_type)
+    if example_post == None:
         sys.stderr.write("No example frontmatter for the selected content type")
         return
 
     print("Please fill out the following frontmatter fields:")
-    fields = []
-    for key in frontmatter.metadata:
-        fields.append(
-            inquirer.Text(key, message="Enter a value for " + key)
-        )
+    new_frontmatter = (get_frontmatter_fields(example_post.metadata) or {})
 
-    inquirer.prompt(fields)
-   
+    for key in new_frontmatter:
+        example_post.metadata[key] = new_frontmatter[key]
+
+    example_post.content = ""
+
+    output_text = frontmatter.dumps(example_post)
+    print(output_text)
+       
 
 
 def get_content_type(content_types):
@@ -48,6 +50,17 @@ def get_content_dirs():
     subdirs.append('content')
 
     return subdirs
+
+def get_frontmatter_fields(metadata):
+    fields = []
+    for key in metadata: 
+        fields.append(
+            inquirer.Text(key, message="Enter a value for " + key, default=metadata[key])
+        )
+
+    return inquirer.prompt(fields)
+
+
 
 if __name__ == "__main__":
     main()
