@@ -83,6 +83,8 @@ def merge_changes(info: HugomanageInfo, repo: git.Repo):
     o.pull()
 
     repo.git.merge(current_branch)
+    o.push()
+    current_branch.delete(repo)
 
 def get_branch_by_name(info: HugomanageInfo, repo: git.Repo, name: str):
     branch = [b for b in repo.branches if b.name == name]
