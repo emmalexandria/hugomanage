@@ -3,8 +3,9 @@ import os
 import sys
 import inquirer
 import argparse
+import git
 
-from files import HugomanageInfo, create_branch
+from files import HugomanageInfo, checkout_active_branch, create_branch, merge_changes, random_name
 
 def main(): 
     parser = argparse.ArgumentParser(prog="hugomanage", description="Integrates with git branching to manage Hugo content files")
@@ -28,6 +29,8 @@ def main():
     
 
 def create_file():
+    repo = git.Repo('./')
+
     content_types = (get_content_dirs() or [])
     if len(content_types) == 0:
         sys.stderr.write("No Hugo content directory found")
@@ -55,17 +58,19 @@ def create_file():
         path = content_type + "/" + filename
 
     info = HugomanageInfo()
-    create_branch(info)
+    create_branch(info, repo, random_name())
     
     frontmatter_str = frontmatter.dumps(example_post)
     output_file = open(path, "w+")
     output_file.write(frontmatter_str)
 
-
-
-
 def sync_changes():
-    return
+    info = HugomanageInfo()
+    repo = git.Repo('./')
+
+    checkout_active_branch(info, repo)
+    merge_changes(info, repo)
+    
 
 def discard_changes():
     return

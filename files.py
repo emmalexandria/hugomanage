@@ -17,12 +17,11 @@ class HugomanageInfo:
         self.load_or_create()
 
     def load_or_create(self):
-        file = None
-        if os.path.exists(self.FILENAME):
-            file = open(self.FILENAME, 'r+')
-        else:
-            file = self._create_hugomanage_info()
+        if os.path.exists(self.FILENAME) != True:
+            self._create_hugomanage_info
 
+        file = open(self.FILENAME, "r+")
+        
         info = json.loads(file.read())
 
         self.repo = git.Repo('./')
@@ -30,6 +29,8 @@ class HugomanageInfo:
         self.original_branch = info['original_branch']
         self.branch_name = info['branch_name']
         self.file_names = info['file_names']
+
+        file.close()
 
 
     def _create_hugomanage_info(self):
@@ -44,7 +45,7 @@ class HugomanageInfo:
         }
 
         json.dump(default_info, file)
-        return file
+        file.close()
 
     def save(self):
         info = {
@@ -61,13 +62,36 @@ class HugomanageInfo:
         file.close()
 
 
-def create_branch(info: HugomanageInfo):
-    repo = git.Repo('./')
-    name = random_name()
+def create_branch(info: HugomanageInfo, repo: git.Repo, name: str):
     new_branch = repo.create_head(random_name())
-    new_branch.checkout
     info.branch_name = name
     info.save()
+    return new_branch
+
+def checkout_active_branch(info: HugomanageInfo, repo: git.Repo):
+    branch_name = info.branch_name
+    branch = get_branch_by_name(info, repo, branch_name)   
+    branch.checkout()
+
+def merge_changes(info: HugomanageInfo, repo: git.Repo):
+    repo.git.add('*')
+    repo.git.commit("Add content")
+    current_branch = repo.active_branch
+    main_branch = get_branch_by_name(info, repo, info.original_branch)
+    main_branch.checkout()
+    o = repo.remotes.origin
+    o.pull()
+
+    repo.git.merge(current_branch)
+
+def get_branch_by_name(info: HugomanageInfo, repo: git.Repo, name: str):
+    branch = [b for b in repo.branches if b.name == name]
+    if len(branch) == 0:
+        branch = create_branch(info, repo, random_name())
+    else:
+        branch = branch[0]
+
+    return branch
 
 def random_name():
    letters = string.ascii_lowercase
