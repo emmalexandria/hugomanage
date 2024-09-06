@@ -3,20 +3,37 @@ import git
 import json
 import random,string
 
-GIT_INFO_FILE = ".hugomanage"
 
 class HugomanageInfo:
-    def load_hugomanage_info(self):
+    FILENAME = ".hugomanage"
+
+    repo: git.Repo
+    is_branched: bool
+    original_branch: str
+    branch_name: str
+    file_names: list 
+
+    def __init__(self):
+        self.load_or_create()
+
+    def load_or_create(self):
         file = None
-        if os.path.exists(GIT_INFO_FILE):
-            file = open(GIT_INFO_FILE, 'r+')
+        if os.path.exists(self.FILENAME):
+            file = open(self.FILENAME, 'r+')
         else:
-            file = self.create_hugomanage_info()
+            file = self._create_hugomanage_info()
 
-        return json.loads(file.read())
+        info = json.loads(file.read())
 
-    def create_hugomanage_info(self):
-        file = open(GIT_INFO_FILE, 'w+')
+        self.repo = git.Repo('./')
+        self.is_branched = info['is_branched']
+        self.original_branch = info['original_branch']
+        self.branch_name = info['branch_name']
+        self.file_names = info['file_names']
+
+
+    def _create_hugomanage_info(self):
+        file = open(self.FILENAME, 'w+')
         repo = git.Repo('./')
 
         default_info = {
@@ -29,22 +46,28 @@ class HugomanageInfo:
         json.dump(default_info, file)
         return file
 
-    def set_info_key(self, key, val):
-        info_file = open(GIT_INFO_FILE, "r+")
-        info_dict = json.loads(info_file.read())
-        info_dict[key] = val
-        info_file.seek(0)
-        info_file.truncate()
-        json.dump(info_dict, info_file)
+    def save(self):
+        info = {
+            'is_branched': self.is_branched,
+            'original_branch': self.original_branch,
+            'branch_name': self.branch_name,
+            'file_names': self.file_names,
+        }
+
+        file = open(self.FILENAME, 'w+')
+        file.seek(0)
+        file.truncate()
+        json.dump(info, file)
+        file.close()
 
 
-def create_branch():
-    info = HugomanageInfo()
+def create_branch(info: HugomanageInfo):
     repo = git.Repo('./')
-    name = random_name
+    name = random_name()
     new_branch = repo.create_head(random_name())
     new_branch.checkout
-    info.set_info_key('branch_name', name)
+    info.branch_name = name
+    info.save()
 
 def random_name():
    letters = string.ascii_lowercase

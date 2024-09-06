@@ -42,17 +42,6 @@ def create_file():
         sys.stderr.write("No example frontmatter for the selected content type")
         return
 
-    print("Please fill out the following frontmatter fields:")
-    new_frontmatter = (get_frontmatter_fields(example_post.metadata) or {})
-
-    for key in new_frontmatter:
-        if type(example_post.metadata[key]) == list:
-            new_list = new_frontmatter[key].split(',')
-            stripped_list = [j.strip() for j in new_list]
-            example_post.metadata[key] = stripped_list 
-        else:
-            example_post.metadata[key] = new_frontmatter[key]
-
     example_post.content = ""
 
     output_text = frontmatter.dumps(example_post)
@@ -64,6 +53,14 @@ def create_file():
         print("File already exists, please enter another name")
         filename = get_filename()
         path = content_type + "/" + filename
+
+    info = HugomanageInfo()
+    create_branch(info)
+    
+    frontmatter_str = frontmatter.dumps(example_post)
+    output_file = open(path, "w+")
+    output_file.write(frontmatter_str)
+
 
 
 
@@ -99,38 +96,14 @@ def get_content_dirs():
     if os.path.isdir('content') != True:
         return 
     subdirs = [ f.path for f in os.scandir('content') if f.is_dir() ]
-    subdirs.append('content')
 
-    return subdirs
+    valid_subdirs = []
+    for dir in subdirs:
+        for file in os.listdir(dir):
+            if file == "frontmatter.txt":
+                valid_subdirs.append(dir)
 
-def get_frontmatter_fields(metadata):
-    fields = []
-    for key in metadata: 
-        if type(metadata[key]) == dict:
-            for key2 in metadata[key]:
-                fields = gen_field_question(metadata[key], key2, fields, prefix=key)        
-
-        fields = gen_field_question(metadata, key, fields)        
-
-    return inquirer.prompt(fields)
-
-def gen_field_question(metadata, key, fields, **kwargs):
-    prefix = kwargs.get('prefix', "") 
-    if prefix != "":
-        prefix += "/"
-    if type(metadata[key]) == list:
-        default = (item[1: -1] for item in str(metadata[key])[1: -1].split(','))
-        fields.append(
-            inquirer.Text(key, message="Enter comma seperated list for " + prefix + key, default=default)
-        )
-    else:
-        fields.append(
-            inquirer.Text(key, message="Enter value for " + prefix  + key, default=metadata[key])
-        )
-
-    return fields
-
-
+    return valid_subdirs 
 
 if __name__ == "__main__":
     main()
