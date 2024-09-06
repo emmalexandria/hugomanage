@@ -18,7 +18,7 @@ class HugomanageInfo:
 
     def load_or_create(self):
         if os.path.exists(self.FILENAME) != True:
-            self._create_hugomanage_info
+            self._create_hugomanage_info()
 
         file = open(self.FILENAME, "r+")
         
@@ -75,7 +75,7 @@ def checkout_active_branch(info: HugomanageInfo, repo: git.Repo):
 
 def merge_changes(info: HugomanageInfo, repo: git.Repo):
     repo.git.add('*')
-    repo.git.commit("Add content")
+    repo.git.commit("-m Add content")
     current_branch = repo.active_branch
     main_branch = get_branch_by_name(info, repo, info.original_branch)
     main_branch.checkout()

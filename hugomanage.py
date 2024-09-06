@@ -30,6 +30,7 @@ def main():
 
 def create_file():
     repo = git.Repo('./')
+    info = HugomanageInfo()
 
     content_types = (get_content_dirs() or [])
     if len(content_types) == 0:
@@ -57,7 +58,6 @@ def create_file():
         filename = get_filename()
         path = content_type + "/" + filename
 
-    info = HugomanageInfo()
     create_branch(info, repo, random_name())
     
     frontmatter_str = frontmatter.dumps(example_post)
