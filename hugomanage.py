@@ -74,10 +74,25 @@ def sync_changes():
     print("Files pushed to remote repository")
 
 def discard_changes():
-    return
+    info = HugomanageInfo()
+    if len(info.file_names) == 0:
+        print("No files to remove.")
+        return
+
+    filtered_files = filter_filenames(info)
+    for f in filtered_files:
+        info.file_names.remove(f)
+        if os.path.exists(f):
+            os.remove(f)
+
+    info.save()
 
 def remove_file():
     info = HugomanageInfo()
+    if len(info.file_names) == 0:
+        print("No files to remove.")
+        return
+
     filtered_files = filter_filenames(info)
     files = (inquirer.prompt([inquirer.Checkbox('files', message="Select files to remove", choices=filtered_files)]) or {"files": "unknown"})
 

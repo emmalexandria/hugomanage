@@ -52,7 +52,7 @@ class HugomanageInfo:
 
 def merge_changes(info: HugomanageInfo, repo: git.Repo):
     repo.git.add(info.file_names)
-    repo.git.commit("-m 'Add content'")
+    repo.git.commit("-m Add content")
     o = repo.remotes.origin
     o.pull()
     o.push()
