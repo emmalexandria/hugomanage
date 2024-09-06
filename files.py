@@ -57,4 +57,7 @@ def merge_changes(info: HugomanageInfo, repo: git.Repo):
     o.pull()
     o.push()
 
+    info.file_names = []
+    info.save()
+
 

@@ -62,12 +62,16 @@ def create_file():
     output_file = open(path, "w+")
     output_file.write(frontmatter_str)
 
+    info.file_names.append(path)
+    info.save()
+    print("Created file at " + path)
+
 def sync_changes():
     info = HugomanageInfo()
     repo = git.Repo('./')
 
     merge_changes(info, repo)
-    
+    print("Files pushed to remote repository")
 
 def discard_changes():
     return
@@ -75,12 +79,9 @@ def discard_changes():
 def remove_file():
     return
     
-       
 def get_filename():
     prompt_result = (inquirer.prompt([inquirer.Text('filename', message="Enter filename")]) or {"filename": "unknown"})
     return prompt_result['filename']
-
-
 
 def get_content_type(content_types):
     types = [inquirer.List('type', message="What type of content would you like to create?", choices=content_types)]
