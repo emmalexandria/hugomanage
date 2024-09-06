@@ -5,7 +5,7 @@ import inquirer
 import argparse
 import git
 
-from files import HugomanageInfo, checkout_active_branch, create_branch, merge_changes, random_name
+from files import HugomanageInfo, merge_changes 
 
 def main(): 
     parser = argparse.ArgumentParser(prog="hugomanage", description="Integrates with git branching to manage Hugo content files")
@@ -58,8 +58,6 @@ def create_file():
         filename = get_filename()
         path = content_type + "/" + filename
 
-    create_branch(info, repo, random_name())
-    
     frontmatter_str = frontmatter.dumps(example_post)
     output_file = open(path, "w+")
     output_file.write(frontmatter_str)
@@ -68,7 +66,6 @@ def sync_changes():
     info = HugomanageInfo()
     repo = git.Repo('./')
 
-    checkout_active_branch(info, repo)
     merge_changes(info, repo)
     
 
