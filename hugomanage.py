@@ -77,8 +77,28 @@ def discard_changes():
     return
 
 def remove_file():
-    return
-    
+    info = HugomanageInfo()
+    filtered_files = filter_filenames(info)
+    files = (inquirer.prompt([inquirer.Checkbox('files', message="Select files to remove", choices=filtered_files)]) or {"files": "unknown"})
+
+    for f in files['files']:
+        info.file_names.remove(f)
+        if os.path.exists(f):
+            os.remove(f)
+
+    info.save()
+
+def filter_filenames(info: HugomanageInfo):
+    filtered_files = []
+    for f in info.file_names:
+        if os.path.exists(f):
+            filtered_files.append(f)
+        else:
+            info.file_names.remove(f)
+    info.save()
+    return filtered_files
+
+
 def get_filename():
     prompt_result = (inquirer.prompt([inquirer.Text('filename', message="Enter filename")]) or {"filename": "unknown"})
     return prompt_result['filename']
