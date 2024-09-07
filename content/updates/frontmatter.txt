@@ -1,0 +1,32 @@
+---
+title: "title"
+shortTitle: "short60"
+highlighted: false
+date: 2024-07-04T01:20:00-05:00
+image: ""
+description : ""
+author: "Achim Haug"
+categories: [
+"Article"
+,"Science"
+,"Community"
+,"Company"
+,"User_Voices"
+,"Schools"
+,"Review"
+]
+weight: 100
+draft: true
+
+diysensor:
+    enable : true
+    image : "/images/pages/index/title.webp"
+    title : "AirGradient Open Source Air Quality Monitors"
+    content : "We design professional, accurate and long-lasting air quality monitors that are open-source and open-hardware so that you have full control on how you want to use the monitor."
+    button: "Learn More"
+    link: "/"
+---
+
+
+<img src="/images/blog/posts/co2-map/pier-nana-location.webp" style="width: 100%;">
+    <div style="font-style: italic;margin-bottom: 30px">David McKelvey from Brisbane, Australia, CC BY 2.0, via Wikimedia Commons</div>

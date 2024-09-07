@@ -51,13 +51,28 @@ class HugomanageInfo:
 
 
 def merge_changes(info: HugomanageInfo, repo: git.Repo):
+    branch_name = gen_branch_name(info)
+    print(branch_name)
+    new_branch = repo.create_head(branch_name)
+    new_branch.checkout()
     repo.git.add(info.file_names)
     repo.git.commit("-m Add content")
     o = repo.remotes.origin
-    o.pull()
     o.push()
 
     info.file_names = []
     info.save()
 
+def gen_branch_name(info: HugomanageInfo):
+    branch_name = ""
+    first_loop = True
+    for name in info.file_names:
+        new_name = name
+        new_name = new_name.lower()
+        new_name = new_name.replace(' ', '_')
+        if first_loop != True:
+            branch_name += '+'
+        branch_name += new_name
+        first_loop = False
 
+    return branch_name
