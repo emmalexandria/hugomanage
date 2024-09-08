@@ -59,8 +59,7 @@ def merge_changes(info: HugomanageInfo, repo: git.Repo):
     for file in info.file_names:
         repo.git.add(file)
     repo.git.commit("-m Add content")
-    o = repo.remotes.origin
-    o.push()
+    repo.git.push('--set-upstream', 'origin', new_branch)
 
     info.file_names = []
     info.save()

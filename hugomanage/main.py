@@ -77,14 +77,14 @@ def create_file(args):
     print("Created file at " + path)
 
 
-def sync_changes():
+def sync_changes(args):
     info = HugomanageInfo()
     repo = git.Repo('./')
 
     merge_changes(info, repo)
     print("Files pushed to remote repository")
 
-def discard_changes():
+def discard_changes(args):
     info = HugomanageInfo()
     if len(info.file_names) == 0:
         print("No files to remove.")
@@ -98,7 +98,7 @@ def discard_changes():
 
     info.save()
 
-def remove_file():
+def remove_file(args):
     info = HugomanageInfo()
     if len(info.file_names) == 0:
         print("No files to remove.")
