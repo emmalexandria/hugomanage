@@ -50,8 +50,16 @@ class HugomanageInfo:
         json.dump(info, file)
         file.close()
 
+    def remove_missing_files(self):
+        for file in self.file_names:
+            if os.path.exists(file) != True:
+                self.file_names.remove(file)
+        
+        self.save()
 
 def merge_changes(info: HugomanageInfo, repo: git.Repo):
+    info.remove_missing_files()
+
     branch_name = gen_branch_name(info)
     print(branch_name)
     new_branch = repo.create_head(branch_name)
