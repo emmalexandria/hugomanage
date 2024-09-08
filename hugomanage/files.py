@@ -2,6 +2,7 @@ import os
 import git
 import json
 import random,string
+import platform, subprocess
 
 
 class HugomanageInfo:
@@ -63,6 +64,20 @@ def merge_changes(info: HugomanageInfo, repo: git.Repo):
 
     info.file_names = []
     info.save()
+
+def open_file_in_editor(filepath: str):
+    system_platform = platform.system()
+
+    try:
+        if system_platform == 'Windows':  # For Windows
+            os.startfile(filepath)
+        elif system_platform == 'Darwin':  # For macOS
+            subprocess.run(['open', filepath])
+        else:  # For Linux and other Unix-based systems
+            subprocess.run(['xdg-open', filepath])
+        print(f"Opened {filepath} successfully.")
+    except Exception as e:
+        print(f"Failed to open {filepath}: {e}")
 
 def gen_branch_name(info: HugomanageInfo):
     branch_name = ""

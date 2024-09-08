@@ -5,7 +5,7 @@ import inquirer
 import argparse
 import git
 
-from files import HugomanageInfo
+from files import HugomanageInfo, merge_changes, open_file_in_editor
 
 def main(): 
     parser = argparse.ArgumentParser(prog="hugomanage", description="Integrates with git branching to manage Hugo content files")
@@ -13,6 +13,7 @@ def main():
 
     create_parser = subparsers.add_parser('create', help="Create a new markdown file to be edited")
     create_parser.set_defaults(func=create_file)
+    create_parser.add_argument('--no_open', help="Don't open the created file in the system default text editor", action='store_true')
 
     sync_parser = subparsers.add_parser('sync', help="Add the files to a new git branch and commit")
     sync_parser.set_defaults(func=sync_changes)
@@ -25,6 +26,7 @@ def main():
     
     
     args = parser.parse_args()
+    
 
     func = None
 
@@ -32,10 +34,11 @@ def main():
         func = args.func
     except AttributeError:
         parser.error("too few arguments")
+
     func(args)
     
 
-def create_file():
+def create_file(args):
     repo = git.Repo('./')
     info = HugomanageInfo()
 
@@ -72,6 +75,7 @@ def create_file():
     info.file_names.append(path)
     info.save()
     print("Created file at " + path)
+
 
 def sync_changes():
     info = HugomanageInfo()
