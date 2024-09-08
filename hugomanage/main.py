@@ -5,7 +5,7 @@ import inquirer
 import argparse
 import git
 
-from files import HugomanageInfo, merge_changes 
+from files import HugomanageInfo
 
 def main(): 
     parser = argparse.ArgumentParser(prog="hugomanage", description="Integrates with git branching to manage Hugo content files")
@@ -25,7 +25,14 @@ def main():
     
     
     args = parser.parse_args()
-    args.func()
+
+    func = None
+
+    try:
+        func = args.func
+    except AttributeError:
+        parser.error("too few arguments")
+    func(args)
     
 
 def create_file():
