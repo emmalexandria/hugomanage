@@ -11,16 +11,16 @@ def main():
     parser = argparse.ArgumentParser(prog="hugomanage", description="Integrates with git branching to manage Hugo content files")
     subparsers = parser.add_subparsers(title="subcommands")
 
-    create_parser = subparsers.add_parser('create')
+    create_parser = subparsers.add_parser('create', help="Create a new markdown file to be edited")
     create_parser.set_defaults(func=create_file)
 
-    sync_parser = subparsers.add_parser('sync')
+    sync_parser = subparsers.add_parser('sync', help="Add the files to a new git branch and commit")
     sync_parser.set_defaults(func=sync_changes)
 
-    remove_parser = subparsers.add_parser('discard')
+    remove_parser = subparsers.add_parser('discard', help="Delete all added files")
     remove_parser.set_defaults(func=discard_changes)
 
-    remove_parser = subparsers.add_parser('remove')
+    remove_parser = subparsers.add_parser('remove', help="Delete a particular added file")
     remove_parser.set_defaults(func=remove_file)
     
     
