@@ -13,7 +13,7 @@ def main():
 
     create_parser = subparsers.add_parser('create', help="Create a new markdown file to be edited")
     create_parser.set_defaults(func=create_file)
-    create_parser.add_argument('--no_open', help="Don't open the created file in the system default text editor", action='store_true')
+    create_parser.add_argument('-n', '--no_open', help="Don't open the created file in the system default text editor", action='store_true')
 
     sync_parser = subparsers.add_parser('sync', help="Add the files to a new git branch and commit")
     sync_parser.set_defaults(func=sync_changes)
@@ -75,6 +75,10 @@ def create_file(args):
     info.file_names.append(path)
     info.save()
     print("Created file at " + path)
+
+
+    if args.no_open != True:
+        open_file_in_editor(path)
 
 
 def sync_changes(args):
